@@ -1,0 +1,139 @@
+
+- ttmath have trivial destructor.
+	TTMATH_PLATFORM32
+- For converting static_float to smaller number of bits use rounding 
+	functins and for coverting to larger number of bits use promote 
+	functions. On that way you could easily do backward precision 
+	tracking and tracking where we promote numbers. Explicit contructors
+	and conversion operators should be used only when doing conversions
+	to non-static float types.
+	To explain: static_float automatically track 
+	forward precision, how we add and multiply precision is expanded.
+	Problematic with C like languages that they do not do overloading by
+	return value and because this you cannot do backward precision tracking
+	ie. when you want pixel to be 8 bits how much barycentrics precision 
+	should have. If we set too big precision for barycentrics then pixel
+	will be bigger than 8 bits and casting to 8 bits should invoke 
+	static_assert. Programmer will then round barycentrics until come
+	compile error dissapears and pixel is 8 bits. Anyway best solution 
+	would be to have for example 12-bit non_rounded_pixel to which result
+	of algoritm is assigned and then non_rounded_pixel is rounded to 
+	8-bit pixel.
+
+- Try to get away from vector_math.h and our tvec3 and stuff because you any 
+	way do rt only for sf and usf so there is no sense to make it more generic.
+	But just try starting from dot() because maybe it is still ambigious.
+
+- rt for mul is maybe wrong, because if integer part of one multiplicand is 
+	1 bit width	then result's integer part will not be sum of integer part 
+	width of both multiplicant but the other one width ie max().
+	Should think what happens when width is 0.
+
+- Because all conversion are explicit by calling explicit constructors,
+	invoking explicit conversion oprators by casting or calling functions
+	for conversion and rounding and such stuff	programer is forced to think 
+	what is happening and code is extra readable and tracable. 
+
+- Practically you did add vector_math::tvec3 because you have implicit 
+	conversion from one static_float type to another and because that
+	you needed constructor that was not defined in glm::detail::tvec3.
+	You need besides conversion functions for static_float types to have
+	also conversion function for glm::detail::tvec3 of static_float type.
+
+- GMP could be usefull for testing static_float. Maybe MPFR could also help.
+
+
+- When above TODOs are implemented and hopefully code of static float is
+	optimized then review TODOs below and cut those which should be 
+	implemented on the top of this TODO file.
+
+
+
++ Maybe change concept of static_float to be [-2.0, 2.0) instead [-1.0, 1.0],
+	and [0, 2.0) instead [0.0, 1.0], 
+	which is more natural for two's complement,
+	so then numeric_limits::max() will be ~0 instead 1 << B and so on.
+
++ Additional classes to make easier calculation template parameters:
+	+ Fraction (-2.0, 2.0) -> sf_f<F> = sf<F+1, -F>
+	+ Integer and fraction -> sf_if<I, F> = sf<I+F, -F>
+
++ only sf() is explicit casting with warning for overflow,
+	all other should have static_assert or exception throwing on overflow.
+
++ int128_t
+	- Needs testing and debugging.
+
++ Division:
+	- precision of remainder is equil to precision of divisor
+	- precision of quotient is equil to precision of dividend
+
++ Give up from fraction and use only integer bits.
+	+ sf<10, 0> is now sf<11, 10> and it use 12 physical bits.
+	+ just multiply float instead it doing by hand.
+	+ mpz_class::get_d() for operator float
+
+- Max fraction length.
+
++ sf - signed static float
++ usf - unsigned static float
++ frac - fraction, template any two types
+
+- result of division of sf is frac
+- result of mul of two same sf is usf
+	operator*(const sf x, const sf& y)
+
++ sf round(frac) - explicit conversion from frac to sf or usf
++ usf unsign(sf) - explicit conversion from sf to usf
+
++ tvec3<sf<F=F1, E=0>> normalize(tvec3<sf<F=F1, E=any>>)
+	- inversesqrt(usf)
+	+ sq(x::sf) = usf(x ^ 2)
+	- any component of normalize() result is in [-1.0, 1.0]
++ usf<F=?, E=0> inversesqrt(usf<F=F1, E=any>)
+	- Real inversesqrt() is done in loop.
+		- Stop criteria when y is not changed anymore (no math)
+		- Precalculate number of iterations (faster, more math).
+	- F of output usf must be good enough so relative error must be below
+		F of normalize() input and output number.
+
+
+- floor, ciel, trunc...
+- sign, signbit...
+
+- usf lenght(vec3)
+	- sqrt(usf)
+	- sq()
+	- result is 1 bit bigger that input
+		- length(v) <= sqrt(2) * max(max(v.x, v.y), v.z)
+
+
+- dot(), cross()
+	- mul, add
+
+- usf: color, fragment, pixel
+- sf: vertex, normal
+
+- blinn
+	- pow(usf, )
+
+- gamma
+	- pow(usf, const)
+
+
+- Alternative normalize() without inversesqrt().
+- Work more on inversesqrt, how to optimize it.
+	- Better precision
+	- Unroll loop
+
+- NaN:
+	- Check integer for division by 0
+
+- Better ostream operator.
+- Need ostream operator for int128_t, uint128_t, int_bit_t, uint_bit_t 
+	with hexadecimal support.
+- Make operator float() explicit after adding ostream operators.
+- Add operator double().
+
+
+

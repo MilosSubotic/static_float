@@ -1,4 +1,5 @@
 
+- License is MIT and new BSD. Give credits to GLM and ttmath.
 
 +- There is possibility to make backward bitwidth decisions.
 	- Expression templates

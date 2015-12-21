@@ -1,4 +1,13 @@
 
+
++- There is possibility to make backward bitwidth decisions.
+	- Expression templates
+	- Curiously recurring template pattern
+	+ Have some experiment working
+		- Need to do disassembly to see does compiler with -O3 
+			optimaze out references in usf_mul
+- Print and read Statically Typed Matrix - in C++ Library.pdf
+
 - ttmath have trivial destructor.
 	TTMATH_PLATFORM32
 - For converting static_float to smaller number of bits use rounding 

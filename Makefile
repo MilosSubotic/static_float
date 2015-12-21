@@ -8,15 +8,15 @@ SOURCES := static_float_test.cpp
 CXXFLAGS += -std=c++11 -g -O0
 
 # GLM
-CPPFLAGS += -I../../../Simulation/RenderingAlgorithms/source/glm
+CPPFLAGS += -I.
 
 # GMP
 CPPFLAGS += -DHAVE_GMP=1
 LIBS += -lgmpxx -lgmp
 
 # clang/llvm 
-CLANGXX=/home/milossubotic/ELEKTRONIKA/A_PROGRAM_CODE/Compilers/LLVM/LLVM/out/llvm-3.5.0/bin/clang++
-LLVM_DIS=/home/milossubotic/ELEKTRONIKA/A_PROGRAM_CODE/Compilers/LLVM/LLVM/out/llvm-3.5.0/bin/llvm-dis
+CLANGXX=clang++
+LLVM_DIS=llvm-dis
 
 ###############################################################################
 

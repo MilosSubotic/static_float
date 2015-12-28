@@ -1,5 +1,9 @@
 
-- License is MIT and new BSD. Give credits to GLM and ttmath.
+- Higher lever of abstraction types:
+	- Scale and bias of fix-point in compare with float-point.
+	- Combined fix and float point for easy switching between two flows.
+
++ License is MIT and new BSD. Give credits to GLM and ttmath.
 
 +- There is possibility to make backward bitwidth decisions.
 	- Expression templates

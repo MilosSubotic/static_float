@@ -1,4 +1,7 @@
 
+- Multiply op optimization: 0th bit of product is always 0.
+	- Also check some TODO below about wrong rt for mul.
+
 - Higher lever of abstraction types:
 	- Scale and bias of fix-point in compare with float-point.
 	- Combined fix and float point for easy switching between two flows.
